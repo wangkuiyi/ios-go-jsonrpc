@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
+#import "AFJSONRPCClient/AFJSONRPCClient.h"
 
 @interface AppDelegate ()
 
@@ -18,7 +19,22 @@
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-  self.window.backgroundColor = [UIColor redColor];
+
+  AFJSONRPCClient *client = [AFJSONRPCClient
+      clientWithEndpointURL:
+          [NSURL URLWithString:@"http://path.to/json-rpc/service/"]];
+  if (!client) {
+    self.window.backgroundColor = [UIColor redColor];
+  } else {
+    [client invokeMethod:@"method.name"
+        success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            self.window.backgroundColor = [UIColor greenColor];
+        }
+        failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            self.window.backgroundColor = [UIColor redColor];
+        }];
+  }
+
   self.window.rootViewController = [[ViewController alloc] init];
   [self.window makeKeyAndVisible];
   return YES;
