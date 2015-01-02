@@ -22,16 +22,21 @@
 
   AFJSONRPCClient *client = [AFJSONRPCClient
       clientWithEndpointURL:
-          [NSURL URLWithString:@"http://path.to/json-rpc/service/"]];
+          [NSURL URLWithString:@"http://192.168.1.135:6061/rpc"]];
   if (!client) {
     self.window.backgroundColor = [UIColor redColor];
   } else {
-    [client invokeMethod:@"method.name"
+    [client invokeMethod:@"HelloService.Say"
+        withParameters:@[ @{
+                         @"Who" : @"Test"
+                       } ]
+        requestId:@(54311)
         success:^(AFHTTPRequestOperation *operation, id responseObject) {
             self.window.backgroundColor = [UIColor greenColor];
         }
         failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            self.window.backgroundColor = [UIColor redColor];
+            self.window.backgroundColor = [UIColor blueColor];
+            NSLog(@"%@", [error localizedDescription]);
         }];
   }
 
